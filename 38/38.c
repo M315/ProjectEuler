@@ -12,7 +12,7 @@ int pandigital_product(unsigned int);
 int main(void){
 	unsigned int n, num, max = 918273645;
 	
-	for(n=362879U; n>0; n--){
+	for(n=0; n<362880; n++){
 		num = unique9(n);
 		if(num > max){
 			if(pandigital_product(num)){
