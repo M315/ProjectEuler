@@ -1,0 +1,3 @@
+La solucio es 40!/(20!*20!).
+
+Perque els camins possibles son els que s'aconsegueixen anant 20 vegades a la dreta i 20 aball amb tots els ordres possibles (permutacions amb repeticio de (r,r,r,r,r,r...d,d,d,d)).
