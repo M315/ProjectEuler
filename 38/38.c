@@ -44,7 +44,7 @@ unsigned int unique9(unsigned int seed){
 int pandigital_product(unsigned int num){
 	int i, j, k, mult, m, dig_count, aux_m, *digits_m;
 	int *digits, n;
-	unsigned aux;
+	unsigned int aux;
 	
 	/*put each digit of the number in a vector*/
 	digits = (int*)malloc(9*sizeof(int));
