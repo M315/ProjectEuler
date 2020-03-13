@@ -1,0 +1,7 @@
+ProjectEuler 63
+
+As long as every nth power of 10 has n+1 digits we just have to search
+for powers with base lower than 10. In order to do so we use wolfram 
+computable notebook:
+
+Sum[If[IntegerLength[i^n]==n,1,0], {n, 1, 50}, {i,1,9}]
