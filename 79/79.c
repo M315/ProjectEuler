@@ -5,14 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int chars_inPass(int*, int, int*);
-void nextPass(int*);
-
 int main(void){
 	int **chars, n_chars = 0;
-	int *pass, n_pass;
-	int aux, i, j;
-	int *c, k;
+	int **before, **after;
+	int aux, i, j, k;
 	FILE *pf;
 	
 	
@@ -38,38 +34,71 @@ int main(void){
 	
 	fclose(pf);
 	
-	c = (int*)calloc(10, sizeof(int));
-	for(i=0; i<n_chars; i++)
-		for(j=0; j<3; j++)
-			for(k=0; k<10; k++)
-				if(chars[i][j] == k)
-					c[k]++;
+	before = (int**)malloc(10*sizeof(int*));
+	for(k=0; k<10; k++){
+		before[k] = (int*)calloc(10, sizeof(int));
+		if(before[k] == NULL){printf("Err: NoMem\n"); return 3;}
+	}
 	
-	for(k=0; k<10; k++)
-		printf("%d->%d\n", k, c[k]);
-	free(c);
-					
-	/*Starting with 10236789 look for the password*/
+	after = (int**)malloc(10*sizeof(int*));
+	for(k=0; k<10; k++){
+		after[k] = (int*)calloc(10, sizeof(int));
+		if(after[k] == NULL){printf("Err: NoMem\n"); return 3;}
+	}
+	
+	for(k=0; k<10; k++){
+		
+		for(i=0; i<n_chars; i++){
+			for(j=0; j<3; j++){
+				if(chars[i][j] == k){
+					if(j==2){
+						before[k][chars[i][j-1]]++;
+					}
+					if(j==1){
+						before[k][chars[i][j-1]]++;
+						
+						after[k][chars[i][j+1]]++;
+					}
+					if(j==0){
+						after[k][chars[i][j+1]]++;
+					}
+				}
+			}
+		}
+	}
+	
+	for(k=0; k<10; k++){
+		printf("The numbers before %d:", k);
+		for(i=0; i<10; i++)
+			if(before[k][i])
+				printf(" %d", i);
+		printf("\n");
+	}
+	
+	for(k=0; k<10; k++){		
+		printf("The numbers after %d:", k);
+		for(i=0; i<10; i++)
+			if(after[k][i])
+				printf(" %d", i);
+		printf("\n");
+	}
+	
+	printf("\nAs the 4 and 5 don't apear in any key we can exclude them.\n");
+	printf("Then we look that the 7 never has any number before it and 3\n");
+	printf("just have the 7, so we put 73... using this resoning we get\n");
+	printf("the answer of 73162890.\n");
 	
 	for(i=0; i<n_chars; i++)
 		free(chars[i]);
 	free(chars);
+	
+	for(i=0; i<10; i++)
+		free(before[i]);
+	free(before);
+	
+	for(i=0; i<10; i++)
+		free(after[i]);
+	free(after);
 		
-	return 0;
-}
-
-/*Returns 1 if all the chars form chars are in pass in order, 0 insted*/
-int chars_inPass(int *pass, int n_pass, int *chars){
-	int i, check;
-	
-	check = 0;
-	for(i=0; i<n_pass; i++){
-		if(pass[i] == chars[check]){
-			check++;
-			if(check == 3)
-				return 1;
-		}
-	}
-	
 	return 0;
 }
