@@ -1,17 +1,18 @@
 /*
  * ProjectEuler 67
  * 
- * Dijktra EZ
+ * Not dijkstra :S, dynamic programing insted
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void shitty_Dijktra(int***, int);
+int shitty_Dijktra(int***, int);
+int cmpfun(const void*, const void*);
 
 int main(void){
 	int ***a, n = 100;
-	int i, j;
+	int i, j, max;
 	FILE *pf;
 	
 	/*Load the triangle from the file*/
@@ -25,7 +26,7 @@ int main(void){
 			if(a[i]==NULL){printf("No mem\n"); return 2;}
 		
 		for(j=0; j<=i; j++){
-			a[i][j]= (int*)calloc(4*sizeof(int));
+			a[i][j]= (int*)calloc(4, sizeof(int));
 				if(a[i][j]==NULL){printf("No mem\n"); return 3;}
 		}
 	}
@@ -37,62 +38,117 @@ int main(void){
 	
 	fclose(pf);
 	
-	shitty_Dijktra(a, n);
+	if(shitty_Dijktra(a, n) == 1){
+		max = 0;
+		for(i=0; i<n; i++)
+			if(max < a[n-1][i][1])
+				max = a[n-1][i][1];
+	}
 	
-	for(i=0; i<100; i++)
+	printf("result: %d\n", max);
+	
+	for(i=0; i<n; i++){
+		for(j=0; j<=i; j++)
+			free(a[i][j]);
 		free(a[i]);
+	}
 	free(a);
 	
 	return 0;
 }
 
+int cmpfun(const void *a, const void *b){
+	return (*(*((int**)a)) - (*(*((int**)b))));
+}
+
 int shitty_Dijktra(int ***a, int n){
 	int **Q, len_Q, *u;
-	int i, j;
+	int i, j, k, alt;
 	
 	for(i=1; i<n; i++)
 		for(j=0; j<=i; j++){
 			/*initialize dist to -1, as we want the longest path*/
-			a[1] = -1;
+			a[i][j][1] = -1;
 			
 			/*initialize the prev to (-1,-1) as it dosent exists)*/
-			a[2] = -1;
-			a[3] = -1;
+			a[i][j][2] = -1;
+			a[i][j][3] = -1;
 		}
 	a[0][0][1] = a[0][0][0];
 	
-	len_Q = 2;
-	Q = (int**)malloc(len_Q*len_Q*sizeof(int*));
+	/*Create Q*/
+	len_Q = 1;
+	Q = (int**)malloc(len_Q*sizeof(int*));
 		if(Q==NULL){printf("No mem\n"); return -1;}
-	for(i=0; i<2; i++){
-		Q[i] = (int**)malloc(2*len_Q*sizeof(int*));
-			if(Q[i]==NULL){printf("No mem\n"); return -1;}
-		Q[1-i][0] = a[1][i][0];
-		Q[1-i][1] = a[1][i][1];
+	Q[0] = (int*)malloc(3*sizeof(int));
+		if(Q[i]==NULL){printf("No mem\n"); return -1;}
+	/*initialize the first node*/
+	Q[0][0] = a[0][0][0];
+	Q[0][1] = 0;
+	Q[0][2] = 0;
+	
+	for(i=1; i<n; i++){
+		for(j=0; j<=i; j++){
+			len_Q++;
+			Q = (int**)realloc(Q, len_Q*sizeof(int*));
+				if(Q==NULL){printf("No mem\n"); return -1;}
+			
+			Q[len_Q-1] = (int*)calloc(3, sizeof(int));
+				if(Q[i]==NULL){printf("No mem\n"); return -1;}
+			Q[len_Q-1][1] = i;
+			Q[len_Q-1][2] = j;
+		}
 	}
 	
-	u = (int*)calloc(2, len_Q*sizeof(int));
+	u = (int*)calloc(3, sizeof(int*));
 		if(u==NULL){printf("No mem\n"); return -1;}
 	
-	while(Q){
+	while(len_Q){
+		/*Sort the Q to have the element with lergest distance at the end*/
+		if(len_Q>1)
+			qsort(Q, len_Q, sizeof(int*), cmpfun);
+		
 		/*Take the first lement of the queue*/
 		u[0] = Q[len_Q-1][0];
 		u[1] = Q[len_Q-1][1];
+		u[2] = Q[len_Q-1][2];
 		
+		/*Remove the element*/
 		len_Q--;
-		Q = (int**)realloc(Q, len_Q*sizeof(int));
-			if(Q==NULL){printf("No mem\n"); return -2;}
+		free(Q[len_Q]);
 		
-		for(i=u[1]; i<=u[1]-1; i++0{
-			
+		/*The neighbours of every element are (i+1,j) and (i+1,j+1)*/
+		if(u[1] < n-1){
+			for(j=u[2]; j<=u[2]+1 && j<=u[1]+1; j++){
+				
+				/*chekc if the neighbour is in Q*/
+				for(k=0; k<len_Q; k++)
+					if(Q[k][1] == (u[1]+1) && Q[k][2] == j){
+						break;
+					}
+				
+				if(k < len_Q){
+					alt = u[0] + a[u[1]+1][j][0];
+					if(alt > Q[k][0]){
+						Q[k][0] = alt;
+						
+						a[u[1]+1][j][1] = alt;
+						
+						/*perv*/
+						a[u[1]+1][j][2] = u[1];
+						a[u[1]+1][j][3] = u[2];
+					}
+				}
+			}
+		}
 	}
 	
 	free(u);
-	for(i=0; i<n; i++)
-		free(Q[i]);
-	free(Q);
+	
+	return 1;
 }
 
+/*
  1  function Dijkstra(Graph, source):
  2
  3      create vertex set Q
@@ -115,3 +171,4 @@ int shitty_Dijktra(int ***a, int n){
 21                  prev[v] ← u 
 22
 23      return dist[], prev[]
+*/
