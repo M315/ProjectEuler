@@ -11,7 +11,12 @@ Idea 1:
 	numbers. For k = 2 we must find the conbinations between 2 primes
 	that doesnt exceed 10^14, knowing the 2 primes can be the same,
 	some at most there are (50 2) but we must find a bound condition. 
-	
+
+Idea 2: (Descarted)
+	Generate a vector of length N and modify the Eratosthenes sieve to
+	fid which numbers are prime and what is its \Omgea.
+	Problem: with 10^8 integers, an integer takes 4 bytes, that's 400Mb.
+	For 10^14 digits are 400 terabytes :(. 
 
 
 Some Refrences:
