@@ -1,3 +1,3 @@
 # ProjectEuler
 
-## Working to 50 consecutive
+## Working in porblem 607
