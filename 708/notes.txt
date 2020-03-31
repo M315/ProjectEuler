@@ -1,0 +1,20 @@
+If I try to do it brute force dont think i would never end, as wolfram
+aborts online evaluation with 10^7 and takes more than 1 min wiht 10^5,
+i dont think this is the way.
+
+Idea 1:
+	Can calculate how many numbers n there are with \Omega(n) = k,
+	since 2^46 < 10^14 < 3*2^45 < 2^47 we just need to check to
+	k = 45, cause there's only one number smaller than 10^14 with
+	46 prime factors.
+	It's obious that the numbers with \Omega(n) = k are the prime 
+	numbers. For k = 2 we must find the conbinations between 2 primes
+	that doesnt exceed 10^14, knowing the 2 primes can be the same,
+	some at most there are (50 2) but we must find a bound condition. 
+	
+
+
+Some Refrences:
+	http://oeis.org/A001222
+	http://oeis.org/wiki/Omega(n),_number_of_prime_factors_of_n_(with_multiplicity)
+	https://en.wikipedia.org/wiki/Prime_omega_function
