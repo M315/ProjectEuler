@@ -5,95 +5,48 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-
-typedef struct fraction{
-	uint64_t a;
-	uint64_t b;
-}fraction;
-
-int n_digits(uint64_t);
-fraction sum_fractions(fraction, fraction);
-uint64_t gcd(uint64_t, uint64_t);
-uint64_t lcm(uint64_t, uint64_t);
+#include <string.h>
+#include "gmp.h"
 
 int main(void){
-	int k;
-	fraction x, y, aux, s;
+	int k, count = 0;
+	unsigned long long len_num, len_den;
+	mpq_t s, y, x, aux;
+	/*mpz_t num, den;*/
 	
-	x.a = 2;
-	x.b = 1;
+	mpq_init(s);
+	mpq_init(y);
+	mpq_init(x);
+	mpq_init(aux);
 	
-	y.a = 1;
-	y.b = 2;
+	mpq_set_ui(x, 2U, 1U);
+	mpq_set_ui(y, 1U, 2U);
 	
-	for(k=100; k>1; k--){
-		aux = sum_fractions(x,y);
+	for(k=0; k<1000; k++){
+		mpq_add(aux, x, y);
+		mpq_canonicalize(aux);
 		
-		y.a = aux.b;
-		y.b = aux.a;
+		mpq_inv(y, aux);
 		
-		aux.a = 1;
-		aux.b = 1;
-		s = sum_fractions(aux,y);
-		
-		printf("%ld/%ld\n", s.a, s.b);
+		mpq_set_ui(aux, 1U, 1U);
+		mpq_add(s, aux, y);
+		mpq_canonicalize(s);
+
+		/*num = mpq_numref(s);
+		den = mpq_denref(s);*/
+		len_num = strlen(mpz_get_str(NULL, 10, mpq_numref(s)));
+		len_den = strlen(mpz_get_str(NULL, 10, mpq_denref(s)));
+
+		if(len_num > len_den)
+			count++;
 	}
+
+	printf("%d\n", count);
+
+	mpq_clear(s);
+	mpq_clear(y);
+	mpq_clear(x);
+	mpq_clear(aux);
 	
 	return 0;
-}
-
-int n_digits(uint64_t a){
-	int n;
-	uint64_t aux;
-	
-	aux = a;
-	n = 0;
-	while(aux!=0){
-		n++;
-		aux = aux/10;
-	}
-	
-	return n;
-}
-
-fraction sum_fractions(fraction x, fraction y){
-	fraction sum;
-	
-	sum.b = lcm(x.b, y.b);
-	sum.a = x.a*(sum.b/x.b) + y.a*(sum.b/y.b);
-	
-	return sum;
-}
-	
-uint64_t gcd(uint64_t a, uint64_t b){
-	/*calculates the gcd using the euclid's algorithm*/
-	uint64_t aux;
-	
-	while(b!=0){
-		aux = b;
-		b = a%b;
-		a = aux;
-	}
-	
-	return a;
-}
-
-uint64_t lcm(uint64_t a, uint64_t b){
-	if(a == 0 || b == 0)
-		return 0;
-	
-	if(a<0){
-		if(b<0){
-			return (a*b)/gcd(a,b);
-		}else{
-			return (-a*b)/gcd(a,b);
-		}
-	}else{
-		if(b<0){
-			return (-a*b)/gcd(a,b);
-		}else{
-			return (a*b)/gcd(a,b);
-		}
-	}
 }

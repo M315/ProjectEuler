@@ -1,0 +1,20 @@
+I make the gess that numbers to be cubed are smaller than 10000:
+	
+	This means that the cube have less than 12 digits and at least
+	5 of them are diferent.
+	So for every number from 400 (or more) to 10000 we can classify
+	their cubes by writing them as x_0,x_1,x_2,...,x_9, where x_i
+	is the number of digits i that have the cube, and since it's
+	always smaller than 10 we can write it as a number base 10.
+
+	[] make an array with the representations followed with the
+	numbers that generate themand when one have 5 elements stop.
+
+	Note: cubes must have the same number of digits i.e. 0XXX dont
+	count.
+	
+	216~464		->	7 digits	[NO]
+	465~999		->	8 digits	[NO]
+	1000~2155	->	9 digits	[NO]
+	2156~4641	->	10 digits	[NO]
+	4642~10000	->	11 digits	[YES]
