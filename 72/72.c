@@ -9,34 +9,86 @@
 typedef struct node{
 	long int m;
 	long int n;
-	node* parent;
 } node;
 
-unsigned long long lenght_coprime_tree(long int);
+unsigned long long length_coprime_tree(long int);
 
 int main(void){
-	long int end = 8;
+	long int end;
+
+	scanf("%ld", &end);
 	
 	printf("%llu\n", length_coprime_tree(end));
 
 	return 0;
 }
 
-unsigned long long lenght_coprime_tree(long int max){
-	unsigned long long int count = 0U, len;
-	node *tree;
-
-	/*First we generate and count the even-odd nodes*/
-	len = 1U;
-	tree = (node*)malloc(len*sizeof(node));
-	tree[0].m = 2;
-	tree[0].n = 1;
-	tree[0].parent = NULL;
+unsigned long long length_coprime_tree(long int max){
+	unsigned long long int count = 0U;
+	long long int len;
+	node *to_visit, curr, new;
 	
-	count++;
+	len = 2;
+	to_visit = (node*)malloc(len*sizeof(node));
+	/*Generate and count the even-odd nodes*/
+	to_visit[0].m = 2;
+	to_visit[0].n = 1;
+	/*Generate and count the odd-odd nodes*/
+	to_visit[1].m = 3;
+	to_visit[1].n = 1;
 
+	/*do a dfs apporach to generate the tree*/
+	while(len > 0){
+		/*take the last item of the list, and delete it form the list*/
+		curr.m = to_visit[len-1].m;
+		curr.n = to_visit[len-1].n;
+		len--;
+		to_visit = (node*)realloc(to_visit, len*sizeof(node));
 
-	
+		count++;
+		
+		/*Branch 1*/
+		new.m = 2*curr.m - curr.n;
+		new.n = curr.m;
+
+		if(new.m <= max){
+			len++;
+			to_visit = (node*)realloc(to_visit, len*sizeof(node));
+			to_visit[len-1].m = new.m;
+			to_visit[len-1].n = new.n;
+
+			/*printf("(%ld, %ld), %lld\n", to_visit[len-1].m, to_visit[len-1].n,
+			len);*/
+		}
+		
+		/*Branch 2*/
+		new.m = 2*curr.m + curr.n;
+		new.n = curr.m;
+
+		if(new.m <= max){
+			len++;
+			to_visit = (node*)realloc(to_visit, len*sizeof(node));
+			to_visit[len-1].m = new.m;
+			to_visit[len-1].n = new.n;
+
+			/*printf("(%ld, %ld), %lld\n", to_visit[len-1].m, to_visit[len-1].n,
+			len);*/
+		}
+
+		/*Branch 3*/
+		new.m = curr.m + 2*curr.n;
+		new.n = curr.n;
+
+		if(new.m <= max){
+			len++;
+			to_visit = (node*)realloc(to_visit, len*sizeof(node));
+			to_visit[len-1].m = new.m;
+			to_visit[len-1].n = new.n;
+
+			/*printf("(%ld, %ld), %lld\n", to_visit[len-1].m, to_visit[len-1].n,
+			len);*/
+		}
+	}
 	
 	return count;
 }

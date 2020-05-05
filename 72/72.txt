@@ -1,0 +1,19 @@
+Tryed brute force and ends up being impossible.
+
+Then in the wikipedia I fount a tree that generates all the pairs contained int
+the set we are looking for. But end up with an algorithm growing exponentialy
+that woud take too much too to the task.
+
+Finally using the previous program i listed the first 20 elements and see that
+in OEIS there were a match, witch show me the trick, that is using the Euler's
+totient function to compute the elements given the number desiered
+
+The solution is not implemented in C, tho its not that hard, but as its a one
+liner in mathematica jeje:
+	Sum[EulerPhi[m], {m, 1, 1000000}]-1
+
+Refernces:
+	OEIS: https://oeis.org/A015614
+	Wikipedia:
+	https://en.wikipedia.org/wiki/Coprime_integers#Generating_all_coprime_pairs
+
