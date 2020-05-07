@@ -1,0 +1,16 @@
+Tryed burte force:
+	take a, b ad compute c such that c*c = a*a + b*b and a + b + c <= L the
+	algorithm is N^2 but takes too long when L >= 100000.
+
+Solution:
+
+The euler way to generate pytagorean triplets is a much better aproach since
+all the ternes (a,b,c) generated are vaild ans we just have to compute if its
+perimeter is alrady counted or not.
+Note that the generators m, n must be coprime and not both odd in order to
+generate a primitive triplet. And that primitibe triplets must be multiplied by
+k = 1, 2,... in order to generate all the pitagorean triplets.
+
+References:
+	https://en.wikipedia.org/wiki/Pythagorean_triple#Generating_a_triple
+	https://www.mathblog.dk/pythagorean-triplets/
