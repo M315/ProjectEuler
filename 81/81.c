@@ -34,9 +34,10 @@ int main(void){
 /*Using dijkstra to compute only the length from the top-left to the right-bottom*/
 unsigned long min_dist(int **matrix, int n){
 	node *Q;
-	int i, j;
+	int i, j, len;
 
-	Q = (node*)malloc(n*n*sizeof(node));
+	len = n*n;
+	Q = (node*)malloc(len*sizeof(node));
 	if(Q == NULL){printf("Err: NoMem\n"); return 0;}
 
 	for(i = 0; i < n; i++){
@@ -47,6 +48,10 @@ unsigned long min_dist(int **matrix, int n){
 		}
 	}
 	Q[0].dist = 0;
+	
+	while(len > 0){
+		
+	}
 		
 	return 0;
 }
