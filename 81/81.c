@@ -33,7 +33,7 @@ int main(void){
 
 /*Using dijkstra to compute only the length from the top-left to the right-bottom*/
 unsigned long min_dist(int **matrix, int n){
-	node *Q;
+	node *Q, u;
 	int i, j, len;
 
 	len = n*n;
@@ -50,7 +50,17 @@ unsigned long min_dist(int **matrix, int n){
 	Q[0].dist = 0;
 	
 	while(len > 0){
+		u = Q[0];
+		/*Q = &Q[1];
 		
+		len--;
+		Q = (node*)realloc(Q, len*sizeof(node));*/
+
+		printf("u = %d, %d, %ld\n", u.i, u.j, u.dist);
+		printf("Q[0] = %d, %d, %ld\n", Q[0].i, Q[0].j, Q[0].dist);
+
+		free(Q);
+		return 1;
 	}
 		
 	return 0;
