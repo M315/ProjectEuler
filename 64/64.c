@@ -12,7 +12,6 @@
 #include <math.h>
 
 int continued_fraction_period(int);
-int check_period(int*, int);
 long long int gcd(long long int, long long int);
 
 int main(void){
@@ -32,16 +31,13 @@ int main(void){
 * Note: cont_frac misses the first digit of the sequence
 * as it's needless to compute the period*/
 int continued_fraction_period(int N){
-	int *cont_frac, len = 0, period = 0, i, upper;
+	int *cont_frac, len = 0, i;
 	long long int b, x, y, b_o, x_o, y_o, aux;
 
 	if(N == (int)sqrt(N)*(int)sqrt(N))
 		return 0;
 
 	cont_frac = (int*)malloc(len*sizeof(int));
-	
-	/*An upper bound is ln(N)*sqrt(N)*/
-	upper = 2 + (int)(log(N) * sqrt(N));
 	
 	/*see https://en.wikipedia.org/wiki/Continued_fraction#Calculating_continued_fraction_representations.
 	* The notation stands for x / (y * sqrt(N) - b) */
@@ -75,11 +71,8 @@ int continued_fraction_period(int N){
 
 		/*printf("#%d -> a = %d, b = %lld, x = %lld, y = %lld\n", len, cont_frac[len-1], b, x, y);*/
 		/*period  = check_period(cont_frac, len);*/
-	}while((b != b_o || y != y_o || x != x_o) && len < upper);
+	}while(b != b_o || y != y_o || x != x_o);
 
-	if(len == upper)
-		return -1;
-	
 	/*printf("%d -> [%d; (", N, (int)sqrt(N));
 	for(i = 0; i < len - 1; i++)
 		printf("%d, ", cont_frac[i]); 
@@ -88,21 +81,6 @@ int continued_fraction_period(int N){
 	free(cont_frac);
 
 	return len;
-}
-
-/*Checks if there's a period in a sequence and returns its length
-* otherwise returns 0.*/
-int check_period(int *list, int n){
-	int i, mid = n/2;
-
-	if(n == 0 || n%2 == 1)
-		return 0;
-	
-	for(i = 0; i < mid; i++)
-		if(list[i] != list[mid + i])
-			return 0;
-	
-	return mid;
 }
 
 long long int gcd(long long int n, long long int m){
