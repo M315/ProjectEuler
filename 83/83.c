@@ -81,6 +81,7 @@ unsigned long min_dist(void){
 
 		printf("(%d, %d)\n", u.i, u.j);
 
+
 		/* If u is the bottom right element stop */
 		if(u.i == n - 1 && u.j == n - 1){
 			for(i = 0; i < n; i++)
@@ -91,11 +92,23 @@ unsigned long min_dist(void){
 			return matrix[u.i][u.j].dist;
 		}
 
-		/* In this case u can only have two neighbours the right and the down node*/
+		/* In this case u can have four neighbours the right, left, up and down nodes */
+		if(u.i > 0) {
+			alt = matrix[u.i][u.j].dist + matrix[u.i - 1][u.j].val;
+			if (!matrix[u.i - 1][u.j].used && matrix[u.i - 1][u.j].dist > alt) {
+				matrix[u.i - 1][u.j].dist = alt;
+			}
+		}
 		if(u.i < n - 1) {
 			alt = matrix[u.i][u.j].dist + matrix[u.i + 1][u.j].val;
 			if (!matrix[u.i + 1][u.j].used && matrix[u.i + 1][u.j].dist > alt) {
 				matrix[u.i + 1][u.j].dist = alt;
+			}
+		}
+		if(u.j > 0){
+			alt = matrix[u.i][u.j].dist + matrix[u.i][u.j - 1].val;
+			if (!matrix[u.i][u.j - 1].used && matrix[u.i][u.j - 1].dist > alt) {
+				matrix[u.i][u.j - 1].dist = alt;
 			}
 		}
 		if(u.j < n - 1) {

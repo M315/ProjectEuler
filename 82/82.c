@@ -17,6 +17,7 @@ typedef struct m_node{
 } m_node;
 
 unsigned long min_dist(void);
+unsigned long left_col_Dijkstra(m_node**, int, int);
 
 int main(void){
 		
@@ -27,10 +28,9 @@ int main(void){
 
 /*Using dijkstra to compute only the length from the top-left to the right-bottom*/
 unsigned long min_dist(void){
-	q_node *Q, u;
 	m_node **matrix; 
-	int n = 80, i, j, alt, len, count = 0;
-	unsigned long min;
+	int n = 80, i, j;
+	unsigned long MIN, D;
 	FILE *pf;
 
 	/* Read the data from file and store it in matrix */
@@ -46,6 +46,24 @@ unsigned long min_dist(void){
 			fscanf(pf, "%d,", &matrix[i][j].val);
 	
 	fclose(pf);
+
+	for(i = 0; i < n; i++){
+		D = left_col_Dijkstra(matrix, n, i);
+		if(D < MIN)
+			MIN = D;
+	}
+
+	for(i = 0; i < 0; i++)
+		free(matrix[i]);
+	free(matrix);
+
+	return MIN;
+}
+
+unsigned long left_col_Dijkstra(m_node **matrix, int n, int N){
+	int i, j, alt, len, count = 0;
+	q_node *Q, u;
+	unsigned long min;
 
 	/* Initilize Q*/
 	len = n*n;
@@ -63,7 +81,7 @@ unsigned long min_dist(void){
 			Q[n*i+j].j = j;
 		}
 	}
-	matrix[0][0].dist = matrix[0][0].val;
+	matrix[N][0].dist = matrix[N][0].val;
 	
 	/* To simplify we use a variable count to track the number of used elements of Q
 	 * so we don't need to resize it every time */
@@ -79,19 +97,16 @@ unsigned long min_dist(void){
 		matrix[u.i][u.j].used = true;
 		count++;
 
-		printf("(%d, %d)\n", u.i, u.j);
+/* 		printf("(%d, %d)\n", u.i, u.j);
+ */
 
-		/* If u is the bottom right element stop */
-		if(u.i == n - 1 && u.j == n - 1){
-			for(i = 0; i < n; i++)
-				free(matrix[i]);
-			free(matrix);
-			free(Q);
-
-			return matrix[u.i][u.j].dist;
+		/* In this case u can only have two neighbours the right, up and down node*/
+		if(u.i > 0) {
+			alt = matrix[u.i][u.j].dist + matrix[u.i - 1][u.j].val;
+			if (!matrix[u.i - 1][u.j].used && matrix[u.i - 1][u.j].dist > alt) {
+				matrix[u.i - 1][u.j].dist = alt;
+			}
 		}
-
-		/* In this case u can only have two neighbours the right and the down node*/
 		if(u.i < n - 1) {
 			alt = matrix[u.i][u.j].dist + matrix[u.i + 1][u.j].val;
 			if (!matrix[u.i + 1][u.j].used && matrix[u.i + 1][u.j].dist > alt) {
@@ -106,11 +121,20 @@ unsigned long min_dist(void){
 		}
 	}
 
-	
-	for(i = 0; i < n; i++)
-		free(matrix[i]);
-	free(matrix);
+	min  = infty;
+	for(i = 0; i < n; i++){
+		if(matrix[i][n - 1].dist < min)
+			min = matrix[i][n - 1].dist;
+	}
+
+/* 	for(i = 0; i < n; i++){
+ * 		for(j = 0; j < n; j++)
+ * 			printf("%lu ", matrix[i][j].dist);
+ * 		printf("\n");
+ * 	}
+ */
+
 	free(Q);
 
-	return -1;
+	return min; 
 }
