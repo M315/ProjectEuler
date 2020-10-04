@@ -79,16 +79,16 @@ unsigned long min_dist(void){
 		matrix[u.i][u.j].used = true;
 		count++;
 
-		printf("(%d, %d)\n", u.i, u.j);
-
 		/* If u is the bottom right element stop */
 		if(u.i == n - 1 && u.j == n - 1){
+			min = matrix[u.i][u.j].dist;
+
 			for(i = 0; i < n; i++)
 				free(matrix[i]);
 			free(matrix);
 			free(Q);
 
-			return matrix[u.i][u.j].dist;
+			return min;
 		}
 
 		/* In this case u can only have two neighbours the right and the down node*/
