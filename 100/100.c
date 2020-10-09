@@ -11,14 +11,19 @@
 #include "gmp.h"
 
 int main(void){
-	unsigned long int k;
+	unsigned long int k, count, a, b;
 	mpz_t m, n, K;
 	
 	mpz_init(m);
 	mpz_init(n);
 	mpz_init(K);
 	
-	for(k = 1513744654945; k < 10000000000000; k += 2){
+	a = 1;
+	b = 5;
+	
+	for(count = 3; count < 20; count++){
+		k = 6*b - a; /*generates the numbers that we are looking for*/
+
 		mpz_set_ui(K, k);
 		
 		/*Set K to k^2 - 1*/
@@ -42,12 +47,15 @@ int main(void){
 				mpz_add_ui(n, K, 1U);
 				mpz_divexact_ui(n, n, 2U);
 
-				gmp_printf ("n = %Zd\n", n);
-				gmp_printf ("m = %Zd\n", m);
-				gmp_printf ("K = %Zd\n", K);
-				break;
+				printf("#%lu:\t", count);
+				gmp_printf ("n = %Zd,\t", n);
+				gmp_printf ("m = %Zd,\t", m);
+				gmp_printf ("K = %Zd.\n", K);
 			}
 		}
+
+		a = b;
+		b = k;
 	}
 	
 	mpz_clear(m);
