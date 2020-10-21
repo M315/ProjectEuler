@@ -3,6 +3,7 @@
 
 long prime_summation(void);
 long *garbellErastotenes(long);
+int findposs(int, int, long*);
 
 int main(void){
 	printf("%ld\n", prime_summation());
@@ -11,28 +12,35 @@ int main(void){
 }
 
 long prime_summation(void){
-	long *num, *prime, curr, i, max = 100;
-	
-	num = (long*)calloc(max, sizeof(long));
-		if(num == NULL){printf("Err: NoMem\n"); return -1;}
+	long *prime, curr, max = 90;
+	int p, count;
 	
 	prime = garbellErastotenes(max);
 
-	for(i = 1; i <= prime[0]; i++)
-		num[prime[i]]++;
-	
+	p = 1;
 	for(curr = 2; curr < max; curr++){
-		for(i = 1; prime[i] <= curr/2 && i <= prime[0]; i++){
-			num[curr] += num[curr - prime[i]];
-		}
-		
+		if(prime[p] <= curr)
+			p++;
+
+		count = findposs(curr, p, prime);
+
 		/*if(num[curr] > 5000)
 			return curr;*/
 		
-		printf("%ld \t%ld\n", curr, num[curr]);
+		printf("%ld \t%d\n", curr, count);
 	}
 
 	return 1;
+}
+
+int findposs(int num, int min_ind, long *prime){
+    int i, sum = 0;
+
+    for(i = min_ind; i > 0; i--){
+        if (num - prime[i] == 0) sum++;
+        if (num - prime[i] > 0) sum += findposs(num - prime[i], i, prime);
+    }
+    return sum; 
 }
 
 long* garbellErastotenes(long N){
