@@ -25,9 +25,10 @@ typedef struct digit_expantion{
 } d_exp;
 
 int init_d_exp(d_exp*, int, long long int*);
+void A_n(d_exp*, int, int);
 
 int main(void){
-	int i, max = 20;
+	int i, max = 17;
 	long long int n = 9;
 	d_exp *t;
 
@@ -50,11 +51,43 @@ int main(void){
 	for(i = 2; i < max; i++)
 		if(init_d_exp(t, i, &n))
 			return 1;
+
+	A_n(t, 99, 100000000);
 		
-	/*for(i = 0; i < max; i++)
-		free(t[i].digit);*/
+	for(i = 0; i < max; i++)
+		free(t[i].digit);
 	
 	return 0;
+}
+
+void A_n(d_exp *t, int N, int max){
+	int d[101], i, k, p, rest;
+	
+	for(i = 0; i < 101; i++)
+		d[i] = 4;
+
+	for(k = 2; k < max; k++){
+		p = (N + 100 - t[k].swift) % t[k].period;
+		p = (p + t[k].period) % t[k].period;
+
+		rest = 0;
+		for(i = 100; i >=0; i--){
+			d[i] += t[k].digit[p] + rest;
+			if(d[i] > 9){
+				d[i] %= 10;
+				rest = 1;
+			}else{
+				rest = 0;
+			}
+
+			p = (p + t[k].period - 1) % t[k].period;
+			p = (p + t[k].period) % t[k].period;
+		}
+	}
+
+	for(i = 0; i <= 100; i++)
+		printf("%d", d[i]);
+	printf("\n");
 }
 
 int init_d_exp(d_exp *t, int i, long long int *n){
@@ -64,28 +97,28 @@ int init_d_exp(d_exp *t, int i, long long int *n){
 	*n *= 3;
 	t[i].swift = *n;
 
-	/*t[i].digit = (int *)malloc(t[i].period * sizeof(int));
-		if(t[i].digit == NULL){ printf("Err: No Mem\n"); return 1;}*/
+	t[i].digit = (int *)malloc(t[i].period * sizeof(int));
+		if(t[i].digit == NULL){ printf("Err: No Mem\n"); return 1;}
 	
 	for(k = 0; k < t[i].period; k++){
 		if(div < *n){
 			div *= 10; 
-			/*t[i].digit[k] = 0;*/
+			t[i].digit[k] = 0;
 		}else{
 			q = div / *n;
 			r = div - (*n * q);
 			div = r * 10;
 
-			/*t[i].digit[k] = q;*/
+			t[i].digit[k] = q;
 		}
 	}
 
 	/*printf("Digits of %lld: ", *n);
 	for(k = 0; k < t[i].period; k++)
 		printf("%d", t[i].digit[k]);
-	printf("\n");*/
+	printf("\n");
 	
-	printf("%lld\t\t->\t\t%lld,\t\t%lld\n", *n, t[i].swift, t[i].period);
+	printf("%d\t-\t%lld\t\t->\t\t%lld,\t\t%lld\n", i, *n, t[i].swift, t[i].period);*/
 
 	return 0;
 }
