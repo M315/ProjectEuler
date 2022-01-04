@@ -1,0 +1,145 @@
+
+%=============================================================================
+%
+%	Apuntes de la asignatura introductoria del Master de Big Data EAE
+%
+%=============================================================================
+
+
+
+%=============================================================================
+%	Packages
+%=============================================================================
+
+\documentclass[10pt, a4paper]{article}		% document format
+\usepackage{graphicx}						% package to insert graphics
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}					% this enables all unicode characters
+\usepackage{amsmath, amsfonts, amssymb} 	% maths packages
+\usepackage{amsthm}							% theorem styles
+\usepackage{fancyhdr}						% package for headers, foot and matgin notes
+\usepackage{enumitem}						% allows to change the enumeration format in line
+\usepackage{mathtools}                      % useful math symbols like floor
+
+
+
+%=============================================================================
+%	Commands
+%=============================================================================
+
+\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathcal{E}}
+
+
+
+%=============================================================================
+%	Environment
+%=============================================================================
+
+\theoremstyle{plain}
+\newtheorem{exercise}{Exercise}
+\newtheorem{algorithm*}{Algorithm}
+
+\theoremstyle{definition}
+\newtheorem{solution}{Solution}[exercise]
+\renewcommand*{\thesolution}{\theexercise.\alph{solution}}	% Make solution instances enumerate with number of exercise and letter of solution
+
+
+
+
+%============================================================================
+%	Pagestyle
+%=============================================================================
+
+\pagestyle{fancy}		% As we use the fancyhdr pkg need the fancy pagestyle, for more information:
+						% http://tug.ctan.org/tex-archive/macros/latex/contrib/fancyhdr/fancyhdr.pdf
+
+
+%\topmargin 0 pt
+%\oddsidemargin 0 pt
+%\evensidemargin 0 pt
+%\marginparwidth 0 pt
+
+
+%\textheight 25cm
+%\textwidth 400 pt
+%\advance\textheight by \topskip
+
+%\parindent 0pt
+%\parskip 5mm plus 1mm minus 1mm
+
+%\fancyhead[C]{\textbf{el que sigui}}					% Central header
+\fancyhead[L]{Project Euler 86}			% Left header
+\fancyhead[R]{Marc Jovani Bertran}						% Right header
+
+
+
+%=============================================================================
+%	Document
+%=============================================================================
+
+\begin{document}
+
+\section{Find the lenght}
+
+We want to know how to compute the lenght of the shortest stright line in a cuboid given $a \geq b \geq c \geq 1$.
+To do it, we select a point $x$ in the some edge, let us start with $a$ so we get $x : a - x$.
+
+\begin{equation}
+    L(x) = \sqrt{b^2 + x^2} + \sqrt{c^2 + (a - x)^2}
+\end{equation}
+
+Let's find the minimum:
+
+\begin{equation}
+    L'(x) = \frac{a - x}{\sqrt{c^2 + (a - x)^2}} - \frac{x}{\sqrt{b^2 + x^2}} = 0
+    \quad\Longleftrightarrow\quad
+    x = \frac{ab}{b + c}
+\end{equation}
+
+Now we have that the lenght of the shortest path is
+
+\begin{equation}
+    L
+    = \sqrt{b^2 + \frac{a^2 b^2}{(b + c)^2}} + \sqrt{c^2 + \frac{a^2 c^2}{(b + c)^2}}
+    = \sqrt{a^2 + b^2 + c^2 + 2bc}
+\end{equation}
+
+Note that as $a \geq b \geq c \geq 1$ this length is the shortest cause if we compute the length selecting $x$ in $b$ we will end up with $\sqrt{a^2 + b^2 + c^2 + 2ac}$ and similarly with $c$.
+So as $bc \leq ac \leq ab$ we have that $L$ is the distance of the shortest path in the cuboid.
+
+\section{Pythagorean triplets}
+
+Note that $L$ can be writen as a pythagorean triplet
+
+\begin{equation}
+    L
+    = \sqrt{a^2 + (b + c)^2}
+\end{equation}
+
+So the approach to find a solution is to compute all the pitagorean triplets $(x,y,z)$ were $x$ and $y$ are smaller than $M$.
+
+To generate all the primitive pythagorean triplets we use Euclid's formula. Given $m > n > 0$, then
+
+\begin{equation}
+    x = m^2 - n^2, \quad
+    y = 2mn, \quad
+    z = m^2 + n^2,
+\end{equation}
+
+form a pythagorean triplet. And if $m$ and $n$ are coprimes not both odd then the triplet is primitive.
+
+\section{Code}
+
+First we create a function $pythagorean\_triplets$ that generates all the pythagorean triplets, using fast gcd, with $z$ smaller than some given constant.
+
+Then we create a funcition that given $a$ and $x = b + c$ computes all the possible cuboids with that $L$, that are smaller than $M$.
+
+To do so we check that $a \leq m$ then if $x \leq a$ we have $\lfloor\frac{x}{2}\rfloor$ solutions as we are looking the number of $(b,c)$ that $b \geq c$ and $b+c = x$, so $c \in [1 \dots \lfloor\frac{x}{2}\rfloor]$.
+On the other had if $x > a$ as $b \leq a$ then $b \in [\lceil\frac{x}{2}\rceil \dots a]$ so we have $max\{a - \lceil\frac{x}{2}\rceil - 1, 0\}$ solutions.
+
+Finally the solver will take $M$ and the pregenerated primitive triplets and for each triplet will generate the all multiple triplets for $k = 1\dots$ were at least $x$ or $y$ is smaller than $M$.
+Then for each triplet will compute the rutes using $a = x$ and $b + c = y$, and for $a = y$ and $b + c = x$.
+
+\end{document}
